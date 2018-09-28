@@ -1,0 +1,10 @@
+{
+    "name": "Python: skeleton_parser.py (Integrated Terminal)",
+    "type": "python",
+    "request": "launch",
+    "program": "${file}",
+    "console": "integratedTerminal"
+    "args": [
+        "skeleton_parser.py", "."
+    ]
+}
