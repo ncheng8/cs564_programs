@@ -12,17 +12,17 @@ update Items set buyoutPrice = null where buyoutPrice = '';
 update Items set sellerID = null where sellerID = '';
 
 .import users.dat Users
-update Items set userID = null where userID = '';
-update Items set location = null where location = '';
-update Items set country = null where country = '';
-update Items set rating = null where rating = '';
+update Users set userID = null where userID = '';
+update Users set location = null where location = '';
+update Users set country = null where country = '';
+update Users set rating = null where rating = '';
 
 .import bids.dat Bids
-update Items set bidderID = null where bidderID = '';
-update Items set itemID = null where itemID = '';
-update Items set time = null where time = '';
-update Items set amount = null where amount = '';
+update Bids set bidderID = null where bidderID = '';
+update Bids set itemID = null where itemID = '';
+update Bids set time = null where time = '';
+update Bids set amount = null where amount = '';
 
 .import categories.dat Categories
-update Items set itemID = null where itemID = '';
-update Items set name = null where name = '';
+update Categories set itemID = null where itemID = '';
+update Categories set name = null where name = '';

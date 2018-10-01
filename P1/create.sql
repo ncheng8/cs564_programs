@@ -19,9 +19,9 @@ CREATE TABLE Items (
 
 CREATE TABLE Users (
 	userID TEXT PRIMARY KEY,
+	rating INTEGER,
 	location TEXT,
-	country TEXT,
-	rating INTEGER
+	country TEXT	
 );
 
 CREATE TABLE Bids (
@@ -36,6 +36,6 @@ CREATE TABLE Bids (
 CREATE TABLE Categories (
 	itemID INTEGER,
 	name TEXT,
-	PRIMARY KEY(itemID, name) 
+	PRIMARY KEY(itemID, name),
 	FOREIGN KEY(itemID) REFERENCES Items(itemID)	
 );

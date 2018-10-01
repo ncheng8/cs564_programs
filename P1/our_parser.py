@@ -128,8 +128,6 @@ def parseJson(json_file):
             description = item.get("Description")
 
             
-            
-            
             if itemID != None:
                 itemsDB.write(itemID)
 
@@ -223,13 +221,22 @@ def parseJson(json_file):
                             bidsDB.write(bidderID)
 
                         if itemID != None:
-                            bidsDB.write("|" + itemID)
+                            itemID = itemID.replace('"', '""')
+                            bidsDB.write("|\"" + itemID + "\"")
+                        else:
+                            bidsDB.write("|")
 
                         if time != None:
-                            bidsDB.write("|" + time)
+                            time = time.replace('"', '""')
+                            bidsDB.write("|\"" + time + "\"")
+                        else:
+                            bidsDB.write("|")
 
                         if amount != None:
-                            bidsDB.write("|" + amount)
+                            amount = amount.replace('"', '""')
+                            bidsDB.write("|\"" + amount + "\"")
+                        else:
+                            bidsDB.write("|")
 
                         bidsDB.write("\n")
 
@@ -274,17 +281,26 @@ def main(argv):
     for user in usersList:
             
         if user[0] != None:
-            usersDB.write(user[0])
+            user[0] = user[0].replace('"', '""')
+            usersDB.write("\"" + user[0] + "\"")
             
         if user[1] != None:
             usersDB.write("|" + user[1])
+        else:
+            usersDB.write("|")
 
         if user[2] != None:
-            usersDB.write("|" + user[2])
-
+            user[2] = user[2].replace('"', '""')
+            usersDB.write("|\"" + user[2] + "\"")
+        else:
+            usersDB.write("|")
+            
         if user[3] != None:
-            usersDB.write("|" + user[3])
-
+            user[3] = user[3].replace('"', '""')
+            usersDB.write("|\"" + user[3] + "\"")
+        else:
+            usersDB.write("|")
+            
         usersDB.write("\n")
 
 
