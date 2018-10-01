@@ -25,10 +25,11 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Bids (
-	bidderID TEXT PRIMARY KEY,
+	bidderID TEXT,
 	itemID INTEGER,
 	time TEXT,
 	amount FLOAT,
+	PRIMARY KEY(bidderID, itemID, time, amount),
 	FOREIGN KEY(bidderID) REFERENCES Users(userID),
 	FOREIGN KEY(itemID) REFERENCES Items(itemID)
 );
