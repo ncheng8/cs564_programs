@@ -31,6 +31,9 @@ from re import sub
 
 columnSeparator = "|"
 
+usersList = []
+categoryList = []
+
 # Dictionary of months used for date transformation
 MONTHS = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',\
         'Jul':'07','Aug':'08','Sep':'09','Oct':'10','Nov':'11','Dec':'12'}
@@ -76,16 +79,10 @@ of the necessary SQL tables for your database.
 """
 def parseJson(json_file):
 
-    #Users
-    usersDB = open("users.dat", "a") 
     #Items
     itemsDB = open("items.dat", "a") 
     #Bids
     bidsDB= open("bids.dat", "a")
-    #Categories
-    categoriesDB = open("categories.dat", "a")
-
-    usersList = []
 
     with open(json_file, 'r') as f:
         items = loads(f.read())['Items'] # creates a Python dictionary of Items for the supplied json file
@@ -96,53 +93,90 @@ def parseJson(json_file):
             """
             itemID = item.get("ItemID")
             name = item.get("Name")
-            category = item.get("Category")
+            
+            categories = item.get("Category")
+
+            for category in categories:
+                if category not in categoryList:
+                    categoryList.append(category)
             
             seller = item.get("Seller")
             sellerID = seller.get("UserID")
             sellerRating = seller.get("Rating")
 
-            if sellerID not in usersList:
+            foundSeller = False
+
+            for user in usersList:
+                if user[0] == sellerID:
+                    foundSeller = True
+                    break
+
+            if foundSeller == False:
                 usersList.append([sellerID, sellerRating, "", ""])
-            
-            currently = item.get("Currently")
+
+            currently = transformDollar(item.get("Currently"))
             firstBid = transformDollar(item.get("First_Bid"))
-            buyPrice = item.get("Buy_Price")
-            numBids = transformDollar(item.get("Number_of_Bids"))
+            buyPrice = transformDollar(item.get("Buy_Price"))
+            numBids = item.get("Number_of_Bids")
             startTime = transformDttm(item.get("Started"))
             ends = transformDttm(item.get("Ends"))
             description = item.get("Description")
 
             
+            
+            
             if itemID != None:
                 itemsDB.write(itemID)
 
             if name != None:
-                itemsDB.write("|" + name)
+                name = name.replace('"', '""')
+                itemsDB.write("|\"" + name + "\"")
+            else:
+                itemsDB.write("|")
 
             if currently != None:
                 itemsDB.write("|" + currently)
+            else:
+                itemsDB.write("|")
 
             if firstBid != None:
                 itemsDB.write("|" + firstBid)
+            else:
+                itemsDB.write("|")
 
             if numBids != None:
                 itemsDB.write("|" + numBids)
+            else:
+                itemsDB.write("|")
 
             if startTime != None:
-                itemsDB.write("|" + startTime)
+                startTime = startTime.replace('"', '""')
+                itemsDB.write("|\"" + startTime + "\"")
+            else:
+                itemsDB.write("|")
 
             if ends != None:
-                itemsDB.write("|" + ends)
+                ends = ends.replace('"', '""')
+                itemsDB.write("|\"" + ends + "\"")
+            else:
+                itemsDB.write("|")
 
             if description != None:
-                itemsDB.write("|" + description)
+                description = description.replace('"', '""')
+                itemsDB.write("|\"" + description + "\"")
+            else:
+                itemsDB.write("|")
 
             if buyPrice != None:
                 itemsDB.write("|" + buyPrice)
+            else:
+                itemsDB.write("|")
 
             if sellerID != None:
-                itemsDB.write("|" + sellerID)
+                sellerID = sellerID.replace('"', '""')
+                itemsDB.write("|\"" + sellerID + "\"")
+            else:
+                itemsDB.write("|")
 
             itemsDB.write("\n")
 
@@ -171,8 +205,8 @@ def parseJson(json_file):
                                     user[2] = location
                                 if user[3] == "":
                                     user[3] = country
-
                                 foundUser = True
+                                break
 
                         if foundUser == False:
                             usersList.append([bidderID, rating, location, country])
@@ -192,29 +226,10 @@ def parseJson(json_file):
                         if amount != None:
                             bidsDB.write("|" + amount)
 
-                        itemsDB.write("\n")
+                        bidsDB.write("\n")
 
-
-    for user in usersList:
-            
-        if user[0] != None:
-            usersDB.write(user[0])
-            
-        if user[1] != None:
-            usersDB.write("|" + user[1])
-
-        if user[2] != None:
-            usersDB.write("|" + user[2])
-
-        if user[3] != None:
-            usersDB.write("|" + user[3])
-
-        usersDB.write("\n")
-
-    usersDB.close()
     itemsDB.close()
     bidsDB.close()
-    categoriesDB.close()
                             
                     
             
@@ -246,6 +261,33 @@ def main(argv):
         if isJson(f):
             parseJson(f)
             print ("Success parsing " + f)
+
+    #Users
+    usersDB = open("users.dat", "a") 
+    #Categories
+    categoriesDB = open("categories.dat", "a")
+
+    for user in usersList:
+            
+        if user[0] != None:
+            usersDB.write(user[0])
+            
+        if user[1] != None:
+            usersDB.write("|" + user[1])
+
+        if user[2] != None:
+            usersDB.write("|" + user[2])
+
+        if user[3] != None:
+            usersDB.write("|" + user[3])
+
+        usersDB.write("\n")
+
+    for category in categoryList:
+        categoriesDB.write(category + "\n")
+
+    usersDB.close()
+    categoriesDB.close()
 
 if __name__ == '__main__':
     main(sys.argv)
