@@ -32,7 +32,6 @@ from re import sub
 columnSeparator = "|"
 
 usersList = []
-categoryList = []
 
 # Dictionary of months used for date transformation
 MONTHS = {'Jan':'01','Feb':'02','Mar':'03','Apr':'04','May':'05','Jun':'06',\
@@ -83,6 +82,8 @@ def parseJson(json_file):
     itemsDB = open("items.dat", "a") 
     #Bids
     bidsDB= open("bids.dat", "a")
+    #Categories
+    categoriesDB = open("categories.dat", "a")
 
     with open(json_file, 'r') as f:
         items = loads(f.read())['Items'] # creates a Python dictionary of Items for the supplied json file
@@ -97,8 +98,12 @@ def parseJson(json_file):
             categories = item.get("Category")
 
             for category in categories:
-                if category not in categoryList:
-                    categoryList.append(category)
+                if itemID != None:
+                    categoriesDB.write(itemID)
+                if category != None:
+                    category = category.replace('"', '""')
+                    categoriesDB.write("|\"" + category + "\"")
+                categoriesDB.write("\n")
             
             seller = item.get("Seller")
             sellerID = seller.get("UserID")
@@ -230,6 +235,7 @@ def parseJson(json_file):
 
     itemsDB.close()
     bidsDB.close()
+    categoriesDB.close()
                             
                     
             
@@ -264,8 +270,6 @@ def main(argv):
 
     #Users
     usersDB = open("users.dat", "a") 
-    #Categories
-    categoriesDB = open("categories.dat", "a")
 
     for user in usersList:
             
@@ -283,11 +287,8 @@ def main(argv):
 
         usersDB.write("\n")
 
-    for category in categoryList:
-        categoriesDB.write(category + "\n")
 
     usersDB.close()
-    categoriesDB.close()
 
 if __name__ == '__main__':
     main(sys.argv)
