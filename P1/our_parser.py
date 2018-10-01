@@ -108,7 +108,9 @@ def parseJson(json_file):
             seller = item.get("Seller")
             sellerID = seller.get("UserID")
             sellerRating = seller.get("Rating")
-
+            itemLocation = item.get("Location")
+            itemCountry = item.get("Country")
+            
             foundSeller = False
 
             for user in usersList:
@@ -117,7 +119,7 @@ def parseJson(json_file):
                     break
 
             if foundSeller == False:
-                usersList.append([sellerID, sellerRating, "", ""])
+                usersList.append([sellerID, sellerRating, itemLocation, itemCountry])
 
             currently = transformDollar(item.get("Currently"))
             firstBid = transformDollar(item.get("First_Bid"))
