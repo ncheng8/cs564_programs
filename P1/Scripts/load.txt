@@ -1,0 +1,28 @@
+.separator |
+.import items.dat Items
+update Items set itemID = null where itemID = '';
+update Items set name = null where name = '';
+update Items set currently = null where currently = '';
+update Items set startBid = null where startBid = '';
+update Items set numBids = null where numBids = '';
+update Items set startTime = null where startTime = '';
+update Items set endTime = null where endTime = '';
+update Items set itemDesc = null where itemDesc = '';
+update Items set buyoutPrice = null where buyoutPrice = '';
+update Items set sellerID = null where sellerID = '';
+
+.import users.dat Users
+update Items set userID = null where userID = '';
+update Items set location = null where location = '';
+update Items set country = null where country = '';
+update Items set rating = null where rating = '';
+
+.import bids.dat Bids
+update Items set bidderID = null where bidderID = '';
+update Items set itemID = null where itemID = '';
+update Items set time = null where time = '';
+update Items set amount = null where amount = '';
+
+.import categories.dat Categories
+update Items set itemID = null where itemID = '';
+update Items set name = null where name = '';
