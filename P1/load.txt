@@ -23,6 +23,6 @@ update Bids set itemID = null where itemID = '';
 update Bids set time = null where time = '';
 update Bids set amount = null where amount = '';
 
-.import cat.dat Categories
+.import categories.dat Categories
 update Categories set itemID = null where itemID = '';
 update Categories set name = null where name = '';
