@@ -98,8 +98,7 @@ void BufMgr::allocBuf(FrameId & frame)
 	//If we kick a valid page out, remove it from the hashtable
 	if(kickedOutValid){
 		hashTable->remove(bufDescTable[clockHand].file, removedPage->page_number());
-	}
-	
+	}	
 }
 
 	
@@ -132,7 +131,6 @@ void BufMgr::readPage(File* file, const PageId pageNo, Page*& page)
 void BufMgr::unPinPage(File* file, const PageId pageNo, const bool dirty) 
 {
 	FrameId frameNum = numBufs + 1;
-
   try{
 		hashTable->lookup(file, pageNo, frameNum);
 	}
@@ -158,30 +156,24 @@ void BufMgr::flushFile(const File* file)
 	for(FrameId i = 0; i < numBufs; i++){
 		BufDesc currFrame = bufDescTable[i];		
 		if(currFrame.file == file){
-
 			if (currFrame.pinCnt > 0) {
-				throw PagePinnedException(file->filename(), currFrame.pageNo, currFrame.frameNo);
+				throw PagePinnedException(currFrame.file->filename(), currFrame.pageNo, currFrame.frameNo);
 			}
 			if (currFrame.valid == false) {
 				throw BadBufferException(currFrame.frameNo, currFrame.dirty, currFrame.valid, currFrame.refbit);
 			}
-
 		}
 	}
 	
 	//Search through the bufTable for pages belonging to the file
 	for(FrameId i = 0; i < numBufs; i++){
-		BufDesc currFrame = bufDescTable[i];
-		
+		BufDesc currFrame = bufDescTable[i];		
 		if(currFrame.file == file){
-
 			if(currFrame.dirty == true){
-
 				//Flush the page to disk and set dirty bit to false
-				FrameId frameNum = numBufs + 1;
-		
+				FrameId frameNum = numBufs + 1;		
 				try{
-					hashTable->lookup(file, currFrame.pageNo, frameNum);
+					hashTable->lookup(currFrame.file, currFrame.pageNo, frameNum);
 				}
 				catch(HashNotFoundException){
 					// should never happen due to previous checks
@@ -190,16 +182,13 @@ void BufMgr::flushFile(const File* file)
 
 				Page myPage = bufPool[frameNum];
 				PageId pageNo = currFrame.pageNo;
-				file->writePage(myPage);
-				currFrame.dirty = false;				
-				
+				currFrame.file->writePage(myPage);
+				currFrame.dirty = false;			
 			}
-
 			//remove from hashtable
-			hashTable->remove(file, currFrame.pageNo);
+			hashTable->remove(currFrame.file, currFrame.pageNo);
 			//invoke clear() of bufdesc
 			currFrame.Clear();
-
 		}
 	}
 }
@@ -228,7 +217,6 @@ void BufMgr::disposePage(File* file, const PageId PageNo)
 	// if it is in a frame, free the frame and delete it from the hash table
 	// call deletePage()		
 	FrameId frameNum = numBufs + 1;
-
 	try{
 		hashTable->lookup(file, PageNo, frameNum);
 	}
